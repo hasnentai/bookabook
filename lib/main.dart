@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'register.dart';
+
+import 'login.dart';
+import 'home.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -11,6 +16,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Raleway'),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
       debugShowCheckedModeBanner: false,
+      initialRoute: '/',
+      routes: {
+        '/login': (context) => Login(),
+        '/register': (context) => Register(),
+        '/home' : (context) => Home()
+
+      },
     );
   }
 }
@@ -28,18 +40,16 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: StackBuilder()),
+      body: bodyBuilder(context),
     );
     // This trailing comma makes auto-formatting nicer for build methods.
   }
 }
 
-Widget StackBuilder() {
+Widget bodyBuilder(BuildContext context) {
   return new Stack(
     children: <Widget>[
       Container(
-        height: double.infinity,
-        width: double.infinity,
         decoration: new BoxDecoration(
             image: new DecorationImage(
                 image: new AssetImage('res/images/loginbg.png'),
@@ -60,85 +70,270 @@ Widget StackBuilder() {
           ),
         ),
       ),
-      new Container(
-        child: CoulmnBuilder(),
-      )
+      iconBuilder(context)
     ],
   );
 }
 
-Widget CoulmnBuilder() {
-  return Center(
+Widget iconBuilder(BuildContext context) {
+  return Container(
+    width: double.infinity,
     child: new Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Icon(
-              Icons.class_,
-              size: 200.0,
-              color: Colors.white,
-            ),
-            new Text(
-              'Book a Book',
-              style: new TextStyle(
+        Expanded(
+          child: new Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Hero(
+               tag: 'icon',
+                              child: Icon(
+                  Icons.class_,
+                  size: 200.0,
                   color: Colors.white,
-                  fontSize: 24.0,
-                  fontFamily: 'Raleway',
-                  fontWeight: FontWeight.w600),
-            ),
-          ],
+                ),
+              ),
+              Text(
+                'Book a Book',
+                style: new TextStyle(fontSize: 25.0, color: Colors.white),
+              ),
+            ],
+          ),
         ),
-        new Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            new Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[],
-            ),
-            Divider(),
-            new Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 18.0),
+            child: new Column(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                new Expanded(child: ButtonBuilder('Login Here'))
+                Row(
+                  children: <Widget>[
+                    new Expanded(
+                      child: GestureDetector(
+                        onTap: (){
+                          Navigator.pushNamed(context, '/login');
+                        },
+                                              child: new Container(
+                            child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: new Container(
+                                    decoration: new BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black12,
+                                            blurRadius:
+                                                6.0, // has the effect of softening the shadow
+                                            // has the effect of extending the shadow
+                                            offset: Offset(
+                                              0, // horizontal, move right 10
+                                              3.0, // vertical, move down 10
+                                            ),
+                                          )
+                                        ],
+                                        color: Colors.white,
+                                        borderRadius:
+                                            new BorderRadius.circular(35.0)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(22.0),
+                                      child: new Text(
+                                        'Login',
+                                        textAlign: TextAlign.center,
+                                        style: new TextStyle(
+                                            fontSize: 20.0,
+                                            color: Color(0xFFF46948)),
+                                      ),
+                                    )))),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    new Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: new Container(
+                          height: 2.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      'OR',
+                      style: new TextStyle(color: Colors.white),
+                    ),
+                    new Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: new Container(
+                          height: 2.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    new Expanded(
+                      child: new Container(
+                          child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: (){
+                                  Navigator.pushNamed(context, '/register');
+                                },
+                                                              child: new Container(
+                                    decoration: new BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black12,
+                                            blurRadius:
+                                                6.0, // has the effect of softening the shadow
+                                            // has the effect of extending the shadow
+                                            offset: Offset(
+                                              0, // horizontal, move right 10
+                                              3.0, // vertical, move down 10
+                                            ),
+                                          )
+                                        ],
+                                        color: Colors.white,
+                                        borderRadius:
+                                            new BorderRadius.circular(35.0)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(22.0),
+                                      child: new Text(
+                                        'Register',
+                                        textAlign: TextAlign.center,
+                                        style: new TextStyle(
+                                            fontSize: 20.0,
+                                            color: Color(0xFFF46948)),
+                                      ),
+                                    )),
+                              ))),
+                    ),
+                  ],
+                ),
               ],
             ),
-          ],
+          ),
         )
       ],
     ),
   );
 }
 
-Widget ButtonBuilder(String name) {
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: new Container(
-      decoration: new BoxDecoration(boxShadow: [
-        BoxShadow(
-          color: Colors.black12,
-          blurRadius: 6.0, // has the effect of softening the shadow
-          // has the effect of extending the shadow
-          offset: Offset(
-            0, // horizontal, move right 10
-            3.0, // vertical, move down 10
-          ),
-        )
-      ], color: Colors.white, borderRadius: new BorderRadius.circular(35.0)),
-      child: Padding(
-        padding: const EdgeInsets.all(22.0),
-        child: new Text(
-          name,
-          textAlign: TextAlign.center,
-          style: new TextStyle(fontSize: 20.0, color: Color(0xFFF46948)),
-        ),
-      ),
-    ),
-  );
-}
+// Widget StackBuilder(BuildContext context) {
+//   return new Stack(
+//     children: <Widget>[
+//       Container(
 
-Widget Divider() {
+//         decoration: new BoxDecoration(
+//             image: new DecorationImage(
+//                 image: new AssetImage('res/images/loginbg.png'),
+//                 fit: BoxFit.cover)),
+//       ),
+//       Opacity(
+//         opacity: 0.94,
+//         child: Container(
+//           height: double.infinity,
+//           width: double.infinity,
+//           decoration: new BoxDecoration(
+//             gradient: LinearGradient(
+//               begin: Alignment.topCenter,
+//               end: Alignment.bottomCenter,
+//               colors: [const Color(0xFFFF900F), const Color(0xFFF46948)],
+//               // whitish to gray
+//             ),
+//           ),
+//         ),
+//       ),
+//       new Container(
+//         child: CoulmnBuilder(context),
+//       )
+//     ],
+//   );
+// }
+
+// Widget CoulmnBuilder(BuildContext context) {
+//   return Center(
+//     child: new Column(
+//       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//       children: <Widget>[
+//         new Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: <Widget>[
+//             Hero(
+//               tag: 'icon',
+//                           child: new Icon(
+//                 Icons.class_,
+//                 size: 200.0,
+//                 color: Colors.white,
+//               ),
+//             ),
+//             new Text(
+//                 'Book a Book',
+//                 style: new TextStyle(
+//                     color: Colors.white,
+//                     fontSize: 24.0,
+//                     fontFamily: 'Raleway',
+//                     fontWeight: FontWeight.w600),
+//               ),
+//           ],
+//         ),
+//         new Column(
+//           mainAxisAlignment: MainAxisAlignment.end,
+//           children: <Widget>[
+//             new Row(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               children: <Widget>[
+//                 Expanded(
+//                   child: ButtonBuilder('Register Here'),
+//                 )
+//               ],
+//             ),
+//             Divider(),
+//             new Row(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               children: <Widget>[
+//                 new Expanded(child: ButtonBuilder('Login Here')
+//                 )
+//               ],
+//             ),
+//           ],
+//         )
+//       ],
+//     ),
+//   );
+// }
+
+// Widget ButtonBuilder(String name) {
+//   return Padding(
+//     padding: const EdgeInsets.all(8.0),
+//     child: new Container(
+//       decoration: new BoxDecoration(boxShadow: [
+//         BoxShadow(
+//           color: Colors.black12,
+//           blurRadius: 6.0, // has the effect of softening the shadow
+//           // has the effect of extending the shadow
+//           offset: Offset(
+//             0, // horizontal, move right 10
+//             3.0, // vertical, move down 10
+//           ),
+//         )
+//       ], color: Colors.white, borderRadius: new BorderRadius.circular(35.0)),
+//       child: Padding(
+//         padding: const EdgeInsets.all(22.0),
+//         child: new Text(
+//           name,
+//           textAlign: TextAlign.center,
+//           style: new TextStyle(fontSize: 20.0, color: Color(0xFFF46948)),
+//         ),
+//       ),
+//     ),
+//   );
+// }
+
+Widget divider() {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
     child: new Row(
