@@ -155,7 +155,7 @@ Widget registerPageBuilder(BuildContext context) {
 }
 
 Widget headerbuilder(BuildContext context) {
-  var width = MediaQuery.of(context).size.width;
+  // var width = MediaQuery.of(context).size.width;
   return new Container(
     height: MediaQuery.of(context).size.height / 2.3,
     width: MediaQuery.of(context).size.width,

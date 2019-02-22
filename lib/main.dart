@@ -1,9 +1,16 @@
+import 'package:bookabook/login-page/login.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'register.dart';
-
-import 'login.dart';
 import 'home.dart';
+
+var routes = <String, WidgetBuilder>{
+  "/login": (BuildContext context) => Login(),
+  '/register': (BuildContext context) => Register(),
+  '/home': (BuildContext context) => Home(),
+  "/myhome": (BuildContext context) => MyHomePage(),
+};
 
 void main() => runApp(MyApp());
 
@@ -12,18 +19,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Raleway'),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      routes: {
-        '/login': (context) => Login(),
-        '/register': (context) => Register(),
-        '/home' : (context) => Home()
-
-      },
-    );
+        title: 'Flutter Demo',
+        theme: ThemeData(primarySwatch: Colors.orange, fontFamily: 'Raleway'),
+        home: MyHomePage(title: 'Flutter Demo Home Page'),
+        debugShowCheckedModeBanner: false,
+        initialRoute: '/',
+        routes: routes);
   }
 }
 
@@ -37,6 +38,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    _auth();
+    super.initState();
+  }
+
+  void _auth() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String token = prefs.getString("token");
+
+    if (token != null) {
+      Navigator.pushReplacementNamed(context, "/home");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,8 +101,8 @@ Widget iconBuilder(BuildContext context) {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Hero(
-               tag: 'icon',
-                              child: Icon(
+                tag: 'icon',
+                child: Icon(
                   Icons.class_,
                   size: 200.0,
                   color: Colors.white,
@@ -109,10 +125,10 @@ Widget iconBuilder(BuildContext context) {
                   children: <Widget>[
                     new Expanded(
                       child: GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           Navigator.pushNamed(context, '/login');
                         },
-                                              child: new Container(
+                        child: new Container(
                             child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: new Container(
@@ -179,10 +195,10 @@ Widget iconBuilder(BuildContext context) {
                           child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: GestureDetector(
-                                onTap: (){
+                                onTap: () {
                                   Navigator.pushNamed(context, '/register');
                                 },
-                                                              child: new Container(
+                                child: new Container(
                                     decoration: new BoxDecoration(
                                         boxShadow: [
                                           BoxShadow(
