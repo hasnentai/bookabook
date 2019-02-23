@@ -3,6 +3,9 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
+  final String email;
+  final String displayName;
+  Home(this.email, this.displayName);
   @override
   _HomeState createState() => new _HomeState();
 }
@@ -10,30 +13,30 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   SharedPreferences prefs;
-
   String email;
   String displayName;
   void initState() {
-    getUSerData();
+    email = widget.email;
+    displayName = widget.displayName;
     super.initState();
   }
 
-  void getUSerData() async {
-    prefs = await SharedPreferences.getInstance();
-    try {
-      email = prefs.getString("email");
-      displayName = prefs.getString("displayName");
-    } catch (e) {
-      print(e);
-    }
-  }
+  // void getUSerData() async {
+  //   prefs = await SharedPreferences.getInstance();
+  //   try {
+  //     email = prefs.getString("email");
+  //     displayName = prefs.getString("displayName");
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   Widget navBarBuilder(BuildContext context) {
     return ListView(
       children: <Widget>[
         UserAccountsDrawerHeader(
-            accountName: Text(displayName),
-            accountEmail: Text(email),
+            accountName: displayName != null ? Text(displayName) : Text(""),
+            accountEmail: email != null ? Text(email) : Text(""),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Theme.of(context).platform == TargetPlatform.iOS
                   ? Colors.orange
@@ -46,6 +49,7 @@ class _HomeState extends State<Home> {
         ListTile(
           title: Text('Logout'),
           onTap: () async {
+            prefs = await SharedPreferences.getInstance();
             prefs.clear();
             Navigator.pushReplacementNamed(context, "/myhome");
           },

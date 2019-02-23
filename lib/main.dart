@@ -8,7 +8,6 @@ import 'home.dart';
 var routes = <String, WidgetBuilder>{
   "/login": (BuildContext context) => Login(),
   '/register': (BuildContext context) => Register(),
-  '/home': (BuildContext context) => Home(),
   "/myhome": (BuildContext context) => MyHomePage(),
 };
 

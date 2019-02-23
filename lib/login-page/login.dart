@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bookabook/functions/validators.dart';
+import 'package:bookabook/home.dart';
 import 'package:bookabook/login-page/login_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -44,9 +45,12 @@ class _LoginState extends State<Login> {
       return _showSnackBar(context, "Invalid Password");
     } else if (response.statusCode == 200) {
       userInfo = json.decode(response.body);
-      print(userInfo);
       await controller.saveUserData(userInfo);
-      Navigator.pushReplacementNamed(context, "/home");
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  Home(userInfo["user_email"], userInfo["user_display_name"])));
     }
   }
 

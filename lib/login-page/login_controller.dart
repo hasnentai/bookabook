@@ -12,6 +12,7 @@ class LoginController {
 
   Future<void> saveUserData(Map<String, dynamic> userInfo) async {
     prefs = await SharedPreferences.getInstance();
+    print(userInfo["user_display_name"]);
     prefs.setString("email", userInfo["user_email"]);
     prefs.setString("token", userInfo["token"]);
     prefs.setString("displayName", userInfo["user_display_name"]);
