@@ -1,7 +1,6 @@
 import 'dart:convert';
 
-import 'package:bookabook/functions/validators.dart';
-import 'package:bookabook/home.dart';
+import 'package:bookabook/home-page/home.dart';
 import 'package:bookabook/login-page/login_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -22,9 +21,12 @@ class _LoginState extends State<Login> {
   String _email;
   String _password;
 
+  bool _isLoading = false;
+
   Map<String, dynamic> userInfo;
   http.Response response;
   submitForm() async {
+    print('object');
     FocusScope.of(context).requestFocus(new FocusNode());
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
@@ -32,15 +34,19 @@ class _LoginState extends State<Login> {
       setState(() => _autovalidate = true);
       return;
     }
-    final Map<String, dynamic> data = {
-      "username": _email,
-      "password": _password
-    };
+    setState(() => _isLoading = true);
+    // final Map<String, dynamic> data = {
+    //   "username": _email,
+    //   "password": _password
+    // };
+    // print(_isLoading);
     try {
-      response = await controller.login(data);
+      response = await controller.login(_email, _password);
     } catch (e) {
       print(e);
     }
+
+    setState(() => _isLoading = false);
     if (response.statusCode == 403) {
       return _showSnackBar(context, "Invalid Password");
     } else if (response.statusCode == 200) {
@@ -72,7 +78,16 @@ class _LoginState extends State<Login> {
         onTap: () {
           FocusScope.of(context).requestFocus(new FocusNode());
         },
-        child: SingleChildScrollView(child: loginPageBuilder(context)),
+        child: Stack(
+          children: <Widget>[
+            SingleChildScrollView(child: loginPageBuilder(context)),
+            _isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Container()
+          ],
+        ),
       ),
     );
   }
@@ -183,7 +198,7 @@ class _LoginState extends State<Login> {
 }
 
 Widget headerbuilder(BuildContext context) {
-  var width = MediaQuery.of(context).size.width;
+  // var width = MediaQuery.of(context).size.width;
   return new Container(
     height: MediaQuery.of(context).size.height / 2.3,
     width: MediaQuery.of(context).size.width,

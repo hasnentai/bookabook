@@ -1,9 +1,9 @@
+import 'package:bookabook/home-page/home.dart';
 import 'package:bookabook/login-page/login.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'register.dart';
-import 'home.dart';
 
 var routes = <String, WidgetBuilder>{
   "/login": (BuildContext context) => Login(),
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(primarySwatch: Colors.orange, fontFamily: 'Raleway'),
-        home: MyHomePage(title: 'Flutter Demo Home Page'),
+        home: MyHomePage(title: 'Book a Book'),
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         routes: routes);
@@ -48,7 +48,10 @@ class _MyHomePageState extends State<MyHomePage> {
     final String token = prefs.getString("token");
 
     if (token != null) {
-      Navigator.pushReplacementNamed(context, "/home");
+      String _email = prefs.getString('email');
+      String _displayName = prefs.getString('displayName');
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => Home(_email, _displayName)));
     }
   }
 

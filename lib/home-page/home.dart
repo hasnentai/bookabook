@@ -1,6 +1,9 @@
+import 'package:bookabook/home-page/categories-controller.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+CatController catController = CatController();
 
 class Home extends StatefulWidget {
   final String email;
@@ -15,21 +18,23 @@ class _HomeState extends State<Home> {
   SharedPreferences prefs;
   String email;
   String displayName;
+  List _categories;
   void initState() {
     email = widget.email;
     displayName = widget.displayName;
+    _fetchCats();
     super.initState();
   }
 
-  // void getUSerData() async {
-  //   prefs = await SharedPreferences.getInstance();
-  //   try {
-  //     email = prefs.getString("email");
-  //     displayName = prefs.getString("displayName");
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+  //fetch categories
+  void _fetchCats() async {
+    try {
+      List categories = await catController.fetchCat();
+      setState(() => _categories = categories);
+    } catch (e) {
+      print(e);
+    }
+  }
 
   Widget navBarBuilder(BuildContext context) {
     return ListView(
@@ -56,6 +61,25 @@ class _HomeState extends State<Home> {
         )
       ],
     );
+  }
+
+  Widget _categoryBuilder() {
+    return _categories == null
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : GridView.builder(
+            gridDelegate:
+                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+            itemCount: _categories.length,
+            itemBuilder: (BuildContext context, index) {
+              return Card(
+                child: Center(
+                  child: Text(_categories[index]['name']),
+                ),
+              );
+            },
+          );
   }
 
   @override
@@ -102,25 +126,8 @@ class _HomeState extends State<Home> {
         drawer: Drawer(child: navBarBuilder(context)),
         body: homeBodybuilder(context));
   }
-}
 
-Widget homeBodybuilder(BuildContext context) {
-  return new Container(
-      child: new Column(
-    children: <Widget>[
-      new SizedBox(
-          height: MediaQuery.of(context).size.height / 4,
-          width: MediaQuery.of(context).size.width,
-          child: new Carousel(
-            images: [
-              new AssetImage('res/images/loginbg.png'),
-              new AssetImage('res/images/loginbg.png'),
-              new AssetImage('res/images/loginbg.png'),
-            ],
-            dotSize: 5.0,
-            dotSpacing: 15.0,
-            indicatorBgPadding: 12.0,
-          )),
-    ],
-  ));
+  Widget homeBodybuilder(BuildContext context) {
+    return _categoryBuilder();
+  }
 }
