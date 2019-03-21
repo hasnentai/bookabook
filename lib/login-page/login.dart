@@ -82,8 +82,11 @@ class _LoginState extends State<Login> {
           children: <Widget>[
             SingleChildScrollView(child: loginPageBuilder(context)),
             _isLoading
-                ? Center(
-                    child: CircularProgressIndicator(),
+                ? Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  color: Colors.black45,
+                  child: Center(child: CircularProgressIndicator())
                   )
                 : Container()
           ],

@@ -88,29 +88,40 @@ class _HomeState extends State<Home> {
         key: _scaffoldKey,
         floatingActionButton: new FloatingActionButton(
           backgroundColor: Color(0xFFFF900F),
-          child: Icon(Icons.add),
+          child: Icon(Icons.add,color: Colors.white,),
           onPressed: () {},
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: new BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          fixedColor: Color(0xFFFF900F),
-          items: [
-            new BottomNavigationBarItem(
-                title: new Text(''), icon: new Icon(Icons.home)),
-            new BottomNavigationBarItem(
-                title: new Text(''), icon: new Icon(Icons.notifications)),
-            new BottomNavigationBarItem(
-                title: new Text(''), icon: new Icon(Icons.search)),
-            new BottomNavigationBarItem(
-                title: new Text(''), icon: new Icon(Icons.person))
-          ],
+        bottomNavigationBar: Theme(
+          data: Theme.of(context).copyWith(
+        // sets the background color of the `BottomNavigationBar`
+        canvasColor: Color(0xFFFF900F),
+        // sets the active color of the `BottomNavigationBar` if `Brightness` is light
+        primaryColor: Colors.red,
+        textTheme: Theme
+            .of(context)
+            .textTheme
+            .copyWith(caption: new TextStyle(color: Colors.white30))),
+                  child: new BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            fixedColor: Colors.white,
+            items: [
+              new BottomNavigationBarItem(
+                  title: new Text(''), icon: new Icon(Icons.home)),
+              new BottomNavigationBarItem(
+                  title: new Text(''), icon: new Icon(Icons.notifications)),
+              new BottomNavigationBarItem(
+                  title: new Text(''), icon: new Icon(Icons.search)),
+              new BottomNavigationBarItem(
+                  title: new Text(''), icon: new Icon(Icons.person))
+            ],
+          ),
         ),
         appBar: new AppBar(
-          title: new Text('Home'),
+          title: new Text('Home',style: new TextStyle(color: Colors.white),),
           backgroundColor: Color(0xFFFF900F),
           leading: GestureDetector(
-            child: Icon(Icons.menu),
+            child: Icon(Icons.menu,color: Colors.white,),
             onTap: () {
               _scaffoldKey.currentState.openDrawer();
             },
@@ -118,7 +129,7 @@ class _HomeState extends State<Home> {
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: new Icon(Icons.send),
+              child: new Icon(Icons.send,color: Colors.white,),
             ),
           ],
           centerTitle: false,

@@ -1,6 +1,7 @@
 import 'package:bookabook/home-page/home.dart';
 import 'package:bookabook/login-page/login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'register.dart';
@@ -17,6 +18,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+          statusBarColor: Color(0xFFFF900F),
+          statusBarIconBrightness: Brightness.light),
+    );
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(primarySwatch: Colors.orange, fontFamily: 'Raleway'),
