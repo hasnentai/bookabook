@@ -97,6 +97,7 @@ class _LoginState extends State<Login> {
 
   Widget emailField() {
     return new TextFormField(
+      initialValue: 'hasnen712',
       decoration: InputDecoration(
         border: OutlineInputBorder(),
         labelText: 'Email',
@@ -109,6 +110,7 @@ class _LoginState extends State<Login> {
 
   Widget passwordField() {
     return TextFormField(
+        initialValue: 'hasnenvkfan712',
         obscureText: true,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
@@ -134,14 +136,14 @@ class _LoginState extends State<Login> {
                 child: Column(
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: emailField(),
                     ),
                     SizedBox(
                       height: 15.0,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: passwordField(),
                     )
                   ],

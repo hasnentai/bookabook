@@ -1,7 +1,9 @@
 import 'package:bookabook/home-page/categories-controller.dart';
 import 'package:flutter/material.dart';
-import 'package:carousel_pro/carousel_pro.dart';
+// import 'package:carousel_pro/carousel_pro.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 CatController catController = CatController();
 
@@ -19,21 +21,61 @@ class _HomeState extends State<Home> {
   String email;
   String displayName;
   List _categories;
+  List _products;
+  List _masterData = [];
+
   void initState() {
     email = widget.email;
     displayName = widget.displayName;
-    _fetchCats();
+    _fetchProducts();
+
     super.initState();
   }
 
   //fetch categories
-  void _fetchCats() async {
+  void _fetchProducts() async {
     try {
-      List categories = await catController.fetchCat();
-      setState(() => _categories = categories);
+      List products = await catController.fetchProducts();
+      setState(() => _products = products);
     } catch (e) {
       print(e);
     }
+    await uniqueList(_products);
+  }
+
+  uniqueList(List list) async {
+    final List unique = [];
+    for (var i = 0; i < list.length; i++) {
+      if (!unique.contains(list[i]['categories'][0]['name'])) {
+        unique.add(list[i]['categories'][0]['name']);
+      }
+      // print(list[i]['categories'][0]['name']);
+    }
+
+    setState(() => _categories = unique);
+    finalComp();
+  }
+
+  finalComp() async {
+    List masterData = [];
+    final List temp = [];
+    for (int i = 0; i < _categories.length; i++) {
+      for (int j = 0; j < _products.length; j++) {
+        if (_categories[i] == _products[j]['categories'][0]['name']) {
+          temp.add(_products[j]);
+        }
+
+        // print(temp);
+      }
+
+      Map jsonMap = {_categories[i]: temp};
+      // print(jsonMap);
+      masterData.add(jsonMap);
+      // print(masterData);
+      // temp.clear();
+    }
+
+    setState(() => _masterData = masterData);
   }
 
   Widget navBarBuilder(BuildContext context) {
@@ -61,25 +103,6 @@ class _HomeState extends State<Home> {
         )
       ],
     );
-  }
-
-  Widget _categoryBuilder() {
-    return _categories == null
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : GridView.builder(
-            gridDelegate:
-                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-            itemCount: _categories.length,
-            itemBuilder: (BuildContext context, index) {
-              return Card(
-                child: Center(
-                  child: Text(_categories[index]['name']),
-                ),
-              );
-            },
-          );
   }
 
   @override
@@ -139,6 +162,42 @@ class _HomeState extends State<Home> {
   }
 
   Widget homeBodybuilder(BuildContext context) {
-    return _categoryBuilder();
+    if (_masterData.isEmpty) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      // print(_masterData);
+      return ListView.builder(
+        itemCount: _masterData.length,
+        itemBuilder: (BuildContext context, int index) {
+          return _buildCarousel(context, index);
+        },
+      );
+    }
+  }
+
+  Widget _buildCarousel(context, index) {
+    var cat = _categories[index];
+    // print(_masterData[index][cat].length);
+    List data = _masterData[index][cat];
+    String imgUrl =
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJftYqJsvhphX6OOjKMjbwllPKR70rAjXcpsP3tQ8XM7-tqRm4';
+    return CarouselSlider(
+        height: 200,
+        items: data.map((item) {
+          if (item['images'].isNotEmpty) imgUrl = item['images'][0]['src'];
+          return Card(
+            child: Column(
+              children: <Widget>[
+                FadeInImage(
+                  image: CachedNetworkImageProvider(imgUrl),
+                  // fit: BoxFit.cover,
+                  placeholder: AssetImage('assets/placeholder.jpg'),
+                ),
+              ],
+            ),
+          );
+        }).toList());
   }
 }
