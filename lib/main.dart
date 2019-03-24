@@ -1,5 +1,6 @@
-import 'package:bookabook/home-page/home.dart';
-import 'package:bookabook/login-page/login.dart';
+
+import 'package:bookabook/screens/home-page/home.dart';
+import 'package:bookabook/screens/login-page/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';

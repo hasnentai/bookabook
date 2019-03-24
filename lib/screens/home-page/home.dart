@@ -1,7 +1,10 @@
-import 'package:bookabook/home-page/categories-controller.dart';
+import 'dart:async';
+
+import 'package:bookabook/models/product.dart';
+import 'package:bookabook/screens/home-page/categories-controller.dart';
 import 'package:flutter/material.dart';
-// import 'package:carousel_pro/carousel_pro.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -17,33 +20,47 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   SharedPreferences prefs;
   String email;
   String displayName;
-  List _categories;
-  List _products;
+  final List<Category> _categories = <Category>[];
+  List _products = [];
   List _masterData = [];
+
+  bool isError = false;
 
   void initState() {
     email = widget.email;
     displayName = widget.displayName;
-    _fetchProducts();
-
+    // _fetchProducts();
+    fetchCats();
     super.initState();
   }
 
-  //fetch categories
-  void _fetchProducts() async {
-    try {
-      List products = await catController.fetchProducts();
-      setState(() => _products = products);
-    } catch (e) {
-      print(e);
-    }
-    await uniqueList(_products);
+  @override
+  void dispose() {
+    super.dispose();
   }
 
+  Future<void> fetchCats() async {
+    final List<Category> categories = await catController.fetchCats();
+    if (categories != null) {
+      setState(() => _categories.addAll(categories));
+    } else {
+      setState(() => isError = true);
+    }
+  }
+
+  // Future<void> _fetchProducts() async {
+  //   List products = await catController.fetchProducts();
+  //   setState(() => _products = products);
+  //   print(_products);
+  //   await uniqueList(_products);
+  // }
+
   uniqueList(List list) async {
+    print('called');
     final List unique = [];
     for (var i = 0; i < list.length; i++) {
       if (!unique.contains(list[i]['categories'][0]['name'])) {
@@ -52,7 +69,13 @@ class _HomeState extends State<Home> {
       // print(list[i]['categories'][0]['name']);
     }
 
-    setState(() => _categories = unique);
+    // setState(() {
+    //   if (_categories == null) {
+    //     _categories = unique;
+    //   } else {
+    //     _categories.addAll(unique);
+    //   }
+    // });
     finalComp();
   }
 
@@ -75,12 +98,16 @@ class _HomeState extends State<Home> {
       // temp.clear();
     }
 
-    setState(() => _masterData = masterData);
+    setState(() {
+      if (_masterData.isEmpty) {
+        _masterData = masterData;
+      } else {
+        _masterData.addAll(masterData);
+      }
+    });
   }
 
   Widget navBarBuilder(BuildContext context) {
-
-    
     return ListView(
       children: <Widget>[
         UserAccountsDrawerHeader(
@@ -95,6 +122,13 @@ class _HomeState extends State<Home> {
                 style: TextStyle(fontSize: 40.0),
               ),
             )),
+        Column(
+          children: _categories.map<Widget>((item) {
+            return ListTile(
+              title: Text(item.name),
+            );
+          }).toList(),
+        ),
         ListTile(
           title: Text('Logout'),
           onTap: () async {
@@ -160,43 +194,66 @@ class _HomeState extends State<Home> {
           centerTitle: false,
         ),
         drawer: Drawer(child: navBarBuilder(context)),
-        body: homeBodybuilder(context));
+        body: StreamBuilder<Object>(
+            stream: catController.fetchProducts(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) setState(() => isError = true);
+
+              if (!snapshot.hasData)
+                return Center(child: CircularProgressIndicator());
+              return homeBodybuilder(context, snapshot.data);
+            }));
   }
 
-  Widget homeBodybuilder(BuildContext context) {
-    if (_masterData.isEmpty) {
+  Widget homeBodybuilder(BuildContext context, List<Product> data) {
+    if (isError) {
       return Center(
-        child: CircularProgressIndicator(),
+        child: Text('Database Error'),
       );
     } else {
-      // print(_masterData);
       return ListView.builder(
-        itemCount: _masterData.length,
+        itemCount: data.length,
         itemBuilder: (BuildContext context, int index) {
-          return _buildCarousel(context, index);
+          return _buildCarousel(context, index, data);
         },
       );
     }
   }
 
-  Widget _buildCarousel(context, index) {
-    var cat = _categories[index];
+  Widget _buildCarousel(context, index, List<Product> data) {
+    // var cat = _categories[index];
     // print(_masterData[index][cat].length);
-    List data = _masterData[index][cat];
+    // List data = _masterData[index][cat];
     String imgUrl =
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJftYqJsvhphX6OOjKMjbwllPKR70rAjXcpsP3tQ8XM7-tqRm4';
     return CarouselSlider(
-        height: 200,
+        height: 250,
         items: data.map((item) {
-          if (item['images'].isNotEmpty) imgUrl = item['images'][0]['src'];
+          // if (item['images'].isNotEmpty) {
+          //   imgUrl = item['images'][0]['src'];
+          // }
           return Card(
             child: Column(
+              // mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                FadeInImage(
-                  image: CachedNetworkImageProvider(imgUrl),
-                  // fit: BoxFit.cover,
-                  placeholder: AssetImage('assets/placeholder.jpg'),
+                FittedBox(
+                  fit: BoxFit.fitHeight,
+                  child: FadeInImage(
+                    height: 150,
+                    width: 200,
+                    image: item.images.isEmpty
+                        ? CachedNetworkImageProvider(imgUrl)
+                        : CachedNetworkImageProvider(item.images[0]['src']),
+                    // fit: BoxFit.cover,
+                    placeholder: AssetImage('res/placeholder.jpg'),
+                  ),
                 ),
+                ListTile(
+                  title: Text(
+                    item.name,
+                    softWrap: true,
+                  ),
+                )
               ],
             ),
           );
