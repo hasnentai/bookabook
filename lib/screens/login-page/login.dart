@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:bookabook/home-page/home.dart';
-import 'package:bookabook/login-page/login_controller.dart';
+
+import 'package:bookabook/screens/home-page/home.dart';
+import 'package:bookabook/screens/login-page/login_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
