@@ -27,7 +27,6 @@ class _LoginState extends State<Login> {
   Map<String, dynamic> userInfo;
   http.Response response;
   submitForm() async {
-    print('object');
     FocusScope.of(context).requestFocus(new FocusNode());
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
@@ -46,7 +45,7 @@ class _LoginState extends State<Login> {
     } catch (e) {
       print(e);
     }
-
+    print(response.body);
     setState(() => _isLoading = false);
     if (response.statusCode == 403) {
       return _showSnackBar(context, "Invalid Password");

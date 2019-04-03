@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bookabook/models/product.dart';
+import 'package:bookabook/screens/detail/product_detail.dart';
 import 'package:bookabook/screens/home-page/categories-controller.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -148,7 +149,11 @@ class _HomeState extends State<Home> {
         floatingActionButton: new FloatingActionButton(
           backgroundColor: Color(0xFFFF900F),
           child: Icon(Icons.add),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context) => Details()
+            ));
+          },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: new BottomNavigationBar(

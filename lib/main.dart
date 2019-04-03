@@ -54,6 +54,8 @@ class _MyHomePageState extends State<MyHomePage> {
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => Home(_email, _displayName)));
     }
+    Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => Home('_email', '_displayName')));
   }
 
   @override
